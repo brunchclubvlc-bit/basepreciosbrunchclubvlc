@@ -42,6 +42,7 @@
             <p class="text-gray-500 dark:text-gray-400">Dashboard definitivo · precios y proveedores</p>
         </div>
         <div class="flex gap-2">
+            <button id="resetBtn" class="btn-danger text-sm"><i class="fas fa-trash"></i> Resetear datos</button>
             <button id="themeToggle" class="btn-outline text-sm"><i class="fas fa-moon"></i> Modo</button>
             <button id="exportBtn" class="btn-outline text-sm"><i class="fas fa-download"></i> Exportar</button>
             <button id="importBtn" class="btn-outline text-sm"><i class="fas fa-upload"></i> Importar</button>
@@ -73,106 +74,110 @@
     function genId() { return Date.now() + '-' + Math.random().toString(36).substr(2, 8); }
     function getPrecioConIVA(sinIVA, iva) { return sinIVA * (1 + iva/100); }
 
-    // SOLO DOS PROVEEDORES: DIRESA Y MERCADONA
-    let proveedores = [
-        { id: "prov1", nombre: "Diresa", contacto: "" },
-        { id: "prov2", nombre: "Mercadona", contacto: "" }
-    ];
+    // ==================== DATOS INICIALES COMPLETOS (61 PRODUCTOS) ====================
+    function getInitialData() {
+        let proveedores = [
+            { id: "prov1", nombre: "Diresa", contacto: "" },
+            { id: "prov2", nombre: "Mercadona", contacto: "" }
+        ];
 
-    let productos = [];
-    let precios = [];
+        let productos = [];
+        let precios = [];
 
-    function addProducto(nombre, categoria, unidad, iva, proveedorId, precioSinIVA, fecha, notas = "") {
-        const id = genId();
-        productos.push({ id, nombre, categoria, unidad, ivaPorcentaje: iva, proveedorId, notas });
-        precios.push({ id: genId(), productoId: id, proveedorId, precioSinIVA, fecha, notaEspecial: notas });
+        function addProducto(nombre, categoria, unidad, iva, proveedorId, precioSinIVA, fecha, notas = "") {
+            const id = genId();
+            productos.push({ id, nombre, categoria, unidad, ivaPorcentaje: iva, proveedorId, notas });
+            precios.push({ id: genId(), productoId: id, proveedorId, precioSinIVA, fecha, notaEspecial: notas });
+        }
+
+        const fechaHoy = new Date().toISOString().slice(0,10);
+        
+        // Vinos y leches Diresa
+        addProducto("Juan de Juanes Rosado", "Vinos", "botella", 21, "prov1", 1.96, "2026-04-11", "");
+        addProducto("Leche ASTURIANA sin lactosa 1.5L", "Leche", "1.5L", 4, "prov1", 1.85, "2026-04-11", "");
+        addProducto("Zumo Hero Naranja", "Zumos", "250ml", 10, "prov1", 0.68, "2026-04-11", "");
+        addProducto("Viña Mayor Roble", "Vinos", "750ml", 21, "prov1", 4.83, "2026-04-11", "");
+        addProducto("Sangría D.Simon 1.5L", "Vinos", "1.5L", 21, "prov1", 1.12, "2026-04-11", "");
+        addProducto("Tinto de Verano Don Simon 1.5L", "Vinos", "1.5L", 21, "prov1", 0.85, "2026-04-11", "");
+        addProducto("Glorioso Rioja Blanco", "Vinos", "750ml", 21, "prov1", 3.68, "2026-04-11", "");
+        addProducto("Glorioso Rioja Crianza", "Vinos", "750ml", 21, "prov1", 3.68, "2026-04-11", "");
+        addProducto("Glorioso Rioja Reserva", "Vinos", "750ml", 21, "prov1", 7.37, "2026-04-11", "");
+        addProducto("Viña Mayor Verdejo", "Vinos", "750ml", 21, "prov1", 3.16, "2026-04-11", "");
+        addProducto("Juan de Juanes Tinto", "Vinos", "750ml", 21, "prov1", 1.96, "2026-04-11", "");
+        addProducto("Juan de Juanes Blanco", "Vinos", "750ml", 21, "prov1", 1.96, "2026-04-11", "");
+        addProducto("Viña Mayor Crianza", "Vinos", "750ml", 21, "prov1", 7.98, fechaHoy, "");
+        
+        // Nuevos productos Diresa
+        addProducto("S.PELLEGRINO 50CL VIDRIO NR", "Aguas con gas", "50cl", 10, "prov1", 0.66, fechaHoy, "Dto 40%+33%");
+        addProducto("ASTURIANA 1,5L ESP.HOST.", "Leche", "1.5L", 4, "prov1", 1.56, fechaHoy, "");
+        addProducto("AST SIN LACTOSA E.H. 1,5L", "Leche", "1.5L", 4, "prov1", 1.85, fechaHoy, "");
+        addProducto("ALPRO DR AVENA BARISTA 1L", "Leches vegetales", "1L", 10, "prov1", 1.59, fechaHoy, "");
+        addProducto("ALPRO DRINK ALMENDRA 1L", "Leches vegetales", "1L", 10, "prov1", 1.58, fechaHoy, "");
+        addProducto("ALPRO BARISTA COC PROF 1L", "Leches vegetales", "1L", 10, "prov1", 1.59, fechaHoy, "");
+        addProducto("ALPRO AVENA S/GLUT.PROF 1L", "Leches vegetales", "1L", 10, "prov1", 1.59, fechaHoy, "");
+        addProducto("ALPRO DRINK SOJA BARISTA 1L", "Leches vegetales", "1L", 10, "prov1", 1.50, fechaHoy, "");
+        addProducto("HERO NARANJA 250ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
+        addProducto("HERO Z.MANZANA 250 ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
+        addProducto("HERO NECTAR PIÑA 250ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
+        addProducto("HERO MELOCOTON 250ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
+        addProducto("HERO MANGO 250 ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
+        addProducto("HERO PIÑA-COCO 250 ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
+        addProducto("FLOR JUCAR 1/2 RET", "Aguas", "1/2", 10, "prov1", 0.41, fechaHoy, "");
+        addProducto("VIÑA MAYOR ROBLE 3/4", "Vinos", "750ml", 21, "prov1", 4.83, fechaHoy, "");
+        addProducto("V.MAYOR VERDEJO 3/4", "Vinos", "750ml", 21, "prov1", 3.16, fechaHoy, "");
+        addProducto("GLORIOSO CRZA 3/4", "Vinos", "750ml", 21, "prov1", 3.68, fechaHoy, "");
+        addProducto("GLORIOSO RVA 3/4", "Vinos", "750ml", 21, "prov1", 7.37, fechaHoy, "");
+        addProducto("GLORIOSO BCO 3/4", "Vinos", "750ml", 21, "prov1", 3.68, fechaHoy, "");
+        addProducto("JUAN JUANES RDO 3/4 BRONCE", "Vinos", "750ml", 21, "prov1", 1.96, fechaHoy, "");
+        addProducto("JUAN JUANES TTO 3/4 BRONCE", "Vinos", "750ml", 21, "prov1", 1.96, fechaHoy, "");
+        addProducto("JUAN JUANES BCO 3/4 BRONCE", "Vinos", "750ml", 21, "prov1", 1.96, fechaHoy, "");
+        
+        // Cervezas y aguas (Diresa)
+        addProducto("SAN MIGUEL 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.43, fechaHoy, "Dto 66%");
+        addProducto("SAN MIGUEL 1/5 RET", "Cervezas", "1/5", 21, "prov1", 0.25, fechaHoy, "Dto 66%");
+        addProducto("SAN MIGUEL BARRIL 50L", "Cervezas", "barril 50L", 21, "prov1", 69.08, fechaHoy, "Dto 66%");
+        addProducto("SAN MIGUEL BARRIL 30L", "Cervezas", "barril 30L", 21, "prov1", 42.33, fechaHoy, "Dto 66%");
+        addProducto("SM MAGNA 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.52, fechaHoy, "Dto 60%");
+        addProducto("SM MAGNA BARRIL 30L", "Cervezas", "barril 30L", 21, "prov1", 56.33, fechaHoy, "Dto 57%");
+        addProducto("SM SELECTA XV 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.57, fechaHoy, "Dto 60%");
+        addProducto("SAN MIGUEL 0,0 1/3 RET", "Cervezas sin alcohol", "1/3", 10, "prov1", 0.59, fechaHoy, "Dto 60%");
+        addProducto("SM RADLER 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.60, fechaHoy, "Dto 60%");
+        addProducto("CORONA 35,5CL NR", "Cervezas", "35.5cl", 21, "prov1", 0.71, fechaHoy, "Dto 55%");
+        addProducto("BUDWEISER 1/3 NR", "Cervezas", "1/3", 21, "prov1", 0.69, fechaHoy, "Dto 50%");
+        addProducto("STELLA ARTOIS 1/3 NR", "Cervezas", "1/3", 21, "prov1", 0.76, fechaHoy, "Dto 45%");
+        addProducto("FRANZISKANER WEIS 50CL NR", "Cervezas", "50cl", 21, "prov1", 0.97, fechaHoy, "Dto 45%");
+        addProducto("LEFFE BRUNE 1/3 NR", "Cervezas", "1/3", 21, "prov1", 1.04, fechaHoy, "Dto 40%");
+        addProducto("LEFFE BLONDE 1/3 NR", "Cervezas", "1/3", 21, "prov1", 1.04, fechaHoy, "Dto 40%");
+        addProducto("ALHAMBRA RVA 1925 1/3 NR", "Cervezas", "1/3", 21, "prov1", 0.80, fechaHoy, "Dto 55%");
+        addProducto("FONT VELLA MEDIO RET", "Aguas", "medio", 10, "prov1", 0.30, fechaHoy, "Dto 67%");
+        addProducto("FV PET 1,25L x15", "Aguas", "pack 1.25L x15", 10, "prov1", 0.36, fechaHoy, "Dto 78%");
+        addProducto("FONT VELLA PET 50cl", "Aguas", "50cl", 10, "prov1", 0.25, fechaHoy, "Dto 72%");
+        addProducto("FONT VELLA GAS 1/3 RET", "Aguas con gas", "1/3", 10, "prov1", 0.43, fechaHoy, "Dto 25%");
+        addProducto("FONT VELLA GAS 1/2 RET", "Aguas con gas", "1/2", 10, "prov1", 0.52, fechaHoy, "Dto 25%");
+        addProducto("SOLAN CABRAS 50CL PET", "Aguas", "50cl", 10, "prov1", 0.43, fechaHoy, "Dto 50%");
+        addProducto("SOLAN CABRAS 1,5L x6 PET", "Aguas", "pack 1.5L x6", 10, "prov1", 0.58, fechaHoy, "Dto 50%");
+        addProducto("SOLAN CABRAS 5L x3 GARRAFA", "Aguas", "garrafa 5L", 10, "prov1", 1.82, fechaHoy, "Dto 50%");
+        addProducto("SOLAN CABRAS GAS 33CL NR", "Aguas con gas", "33cl", 10, "prov1", 0.81, fechaHoy, "Dto 25%");
+        addProducto("S.PELLEGRINO 25CL VIDRIO NR", "Aguas con gas", "25cl", 10, "prov1", 0.79, fechaHoy, "Dto 28%+33%");
+
+        // Mercadona
+        addProducto("Arroz redondo Hacendado", "Arroces", "1 kg", 10, "prov2", 1.30, fechaHoy, "");
+        addProducto("Leche entera Hacendado 1L", "Leche", "1L", 4, "prov2", 0.96, fechaHoy, "");
+        addProducto("Garbanzo cocido Hacendado", "Legumbres", "570g", 10, "prov2", 0.85, fechaHoy, "");
+        addProducto("Spaghetti Hacendado", "Pastas", "500g", 10, "prov2", 0.80, fechaHoy, "");
+        addProducto("Cerveza Heineken lata 330ml", "Cervezas", "lata", 21, "prov2", 0.79, fechaHoy, "");
+        addProducto("Filetes pechuga de pollo", "Carnes", "560g", 10, "prov2", 4.09, fechaHoy, "");
+
+        return { proveedores, productos, precios };
     }
 
-    const fechaHoy = new Date().toISOString().slice(0,10);
-    
-    // ==================== TODOS LOS PRODUCTOS DE DIRESA (prov1) ====================
-    // Vinos y leches ya existentes
-    addProducto("Juan de Juanes Rosado", "Vinos", "botella", 21, "prov1", 1.96, "2026-04-11", "");
-    addProducto("Leche ASTURIANA sin lactosa 1.5L", "Leche", "1.5L", 4, "prov1", 1.85, "2026-04-11", "");
-    addProducto("Zumo Hero Naranja", "Zumos", "250ml", 10, "prov1", 0.68, "2026-04-11", "");
-    addProducto("Viña Mayor Roble", "Vinos", "750ml", 21, "prov1", 4.83, "2026-04-11", "");
-    addProducto("Sangría D.Simon 1.5L", "Vinos", "1.5L", 21, "prov1", 1.12, "2026-04-11", "");
-    addProducto("Tinto de Verano Don Simon 1.5L", "Vinos", "1.5L", 21, "prov1", 0.85, "2026-04-11", "");
-    addProducto("Glorioso Rioja Blanco", "Vinos", "750ml", 21, "prov1", 3.68, "2026-04-11", "");
-    addProducto("Glorioso Rioja Crianza", "Vinos", "750ml", 21, "prov1", 3.68, "2026-04-11", "");
-    addProducto("Glorioso Rioja Reserva", "Vinos", "750ml", 21, "prov1", 7.37, "2026-04-11", "");
-    addProducto("Viña Mayor Verdejo", "Vinos", "750ml", 21, "prov1", 3.16, "2026-04-11", "");
-    addProducto("Juan de Juanes Tinto", "Vinos", "750ml", 21, "prov1", 1.96, "2026-04-11", "");
-    addProducto("Juan de Juanes Blanco", "Vinos", "750ml", 21, "prov1", 1.96, "2026-04-11", "");
-    addProducto("Viña Mayor Crianza", "Vinos", "750ml", 21, "prov1", 7.98, fechaHoy, "");
-    
-    // Nuevos productos de tu listado (todos Diresa)
-    addProducto("S.PELLEGRINO 50CL VIDRIO NR", "Aguas con gas", "50cl", 10, "prov1", 0.66, fechaHoy, "Dto 40%+33%");
-    addProducto("ASTURIANA 1,5L ESP.HOST.", "Leche", "1.5L", 4, "prov1", 1.56, fechaHoy, "");
-    addProducto("AST SIN LACTOSA E.H. 1,5L", "Leche", "1.5L", 4, "prov1", 1.85, fechaHoy, "");
-    addProducto("ALPRO DR AVENA BARISTA 1L", "Leches vegetales", "1L", 10, "prov1", 1.59, fechaHoy, "");
-    addProducto("ALPRO DRINK ALMENDRA 1L", "Leches vegetales", "1L", 10, "prov1", 1.58, fechaHoy, "");
-    addProducto("ALPRO BARISTA COC PROF 1L", "Leches vegetales", "1L", 10, "prov1", 1.59, fechaHoy, "");
-    addProducto("ALPRO AVENA S/GLUT.PROF 1L", "Leches vegetales", "1L", 10, "prov1", 1.59, fechaHoy, "");
-    addProducto("ALPRO DRINK SOJA BARISTA 1L", "Leches vegetales", "1L", 10, "prov1", 1.50, fechaHoy, "");
-    addProducto("HERO NARANJA 250ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
-    addProducto("HERO Z.MANZANA 250 ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
-    addProducto("HERO NECTAR PIÑA 250ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
-    addProducto("HERO MELOCOTON 250ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
-    addProducto("HERO MANGO 250 ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
-    addProducto("HERO PIÑA-COCO 250 ML", "Zumos", "250ml", 10, "prov1", 0.68, fechaHoy, "");
-    addProducto("FLOR JUCAR 1/2 RET", "Aguas", "1/2", 10, "prov1", 0.41, fechaHoy, "");
-    addProducto("VIÑA MAYOR ROBLE 3/4", "Vinos", "750ml", 21, "prov1", 4.83, fechaHoy, "");
-    addProducto("V.MAYOR VERDEJO 3/4", "Vinos", "750ml", 21, "prov1", 3.16, fechaHoy, "");
-    addProducto("GLORIOSO CRZA 3/4", "Vinos", "750ml", 21, "prov1", 3.68, fechaHoy, "");
-    addProducto("GLORIOSO RVA 3/4", "Vinos", "750ml", 21, "prov1", 7.37, fechaHoy, "");
-    addProducto("GLORIOSO BCO 3/4", "Vinos", "750ml", 21, "prov1", 3.68, fechaHoy, "");
-    addProducto("JUAN JUANES RDO 3/4 BRONCE", "Vinos", "750ml", 21, "prov1", 1.96, fechaHoy, "");
-    addProducto("JUAN JUANES TTO 3/4 BRONCE", "Vinos", "750ml", 21, "prov1", 1.96, fechaHoy, "");
-    addProducto("JUAN JUANES BCO 3/4 BRONCE", "Vinos", "750ml", 21, "prov1", 1.96, fechaHoy, "");
-    
-    // Cervezas y aguas (antes "Grupo Brunch", ahora Diresa)
-    addProducto("SAN MIGUEL 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.43, fechaHoy, "Dto 66%");
-    addProducto("SAN MIGUEL 1/5 RET", "Cervezas", "1/5", 21, "prov1", 0.25, fechaHoy, "Dto 66%");
-    addProducto("SAN MIGUEL BARRIL 50L", "Cervezas", "barril 50L", 21, "prov1", 69.08, fechaHoy, "Dto 66%");
-    addProducto("SAN MIGUEL BARRIL 30L", "Cervezas", "barril 30L", 21, "prov1", 42.33, fechaHoy, "Dto 66%");
-    addProducto("SM MAGNA 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.52, fechaHoy, "Dto 60%");
-    addProducto("SM MAGNA BARRIL 30L", "Cervezas", "barril 30L", 21, "prov1", 56.33, fechaHoy, "Dto 57%");
-    addProducto("SM SELECTA XV 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.57, fechaHoy, "Dto 60%");
-    addProducto("SAN MIGUEL 0,0 1/3 RET", "Cervezas sin alcohol", "1/3", 10, "prov1", 0.59, fechaHoy, "Dto 60%");
-    addProducto("SM RADLER 1/3 RET", "Cervezas", "1/3", 21, "prov1", 0.60, fechaHoy, "Dto 60%");
-    addProducto("CORONA 35,5CL NR", "Cervezas", "35.5cl", 21, "prov1", 0.71, fechaHoy, "Dto 55%");
-    addProducto("BUDWEISER 1/3 NR", "Cervezas", "1/3", 21, "prov1", 0.69, fechaHoy, "Dto 50%");
-    addProducto("STELLA ARTOIS 1/3 NR", "Cervezas", "1/3", 21, "prov1", 0.76, fechaHoy, "Dto 45%");
-    addProducto("FRANZISKANER WEIS 50CL NR", "Cervezas", "50cl", 21, "prov1", 0.97, fechaHoy, "Dto 45%");
-    addProducto("LEFFE BRUNE 1/3 NR", "Cervezas", "1/3", 21, "prov1", 1.04, fechaHoy, "Dto 40%");
-    addProducto("LEFFE BLONDE 1/3 NR", "Cervezas", "1/3", 21, "prov1", 1.04, fechaHoy, "Dto 40%");
-    addProducto("ALHAMBRA RVA 1925 1/3 NR", "Cervezas", "1/3", 21, "prov1", 0.80, fechaHoy, "Dto 55%");
-    addProducto("FONT VELLA MEDIO RET", "Aguas", "medio", 10, "prov1", 0.30, fechaHoy, "Dto 67%");
-    addProducto("FV PET 1,25L x15", "Aguas", "pack 1.25L x15", 10, "prov1", 0.36, fechaHoy, "Dto 78%");
-    addProducto("FONT VELLA PET 50cl", "Aguas", "50cl", 10, "prov1", 0.25, fechaHoy, "Dto 72%");
-    addProducto("FONT VELLA GAS 1/3 RET", "Aguas con gas", "1/3", 10, "prov1", 0.43, fechaHoy, "Dto 25%");
-    addProducto("FONT VELLA GAS 1/2 RET", "Aguas con gas", "1/2", 10, "prov1", 0.52, fechaHoy, "Dto 25%");
-    addProducto("SOLAN CABRAS 50CL PET", "Aguas", "50cl", 10, "prov1", 0.43, fechaHoy, "Dto 50%");
-    addProducto("SOLAN CABRAS 1,5L x6 PET", "Aguas", "pack 1.5L x6", 10, "prov1", 0.58, fechaHoy, "Dto 50%");
-    addProducto("SOLAN CABRAS 5L x3 GARRAFA", "Aguas", "garrafa 5L", 10, "prov1", 1.82, fechaHoy, "Dto 50%");
-    addProducto("SOLAN CABRAS GAS 33CL NR", "Aguas con gas", "33cl", 10, "prov1", 0.81, fechaHoy, "Dto 25%");
-    addProducto("S.PELLEGRINO 25CL VIDRIO NR", "Aguas con gas", "25cl", 10, "prov1", 0.79, fechaHoy, "Dto 28%+33%");
-
-    // ==================== PRODUCTOS DE MERCADONA (prov2) ====================
-    addProducto("Arroz redondo Hacendado", "Arroces", "1 kg", 10, "prov2", 1.30, fechaHoy, "");
-    addProducto("Leche entera Hacendado 1L", "Leche", "1L", 4, "prov2", 0.96, fechaHoy, "");
-    addProducto("Garbanzo cocido Hacendado", "Legumbres", "570g", 10, "prov2", 0.85, fechaHoy, "");
-    addProducto("Spaghetti Hacendado", "Pastas", "500g", 10, "prov2", 0.80, fechaHoy, "");
-    addProducto("Cerveza Heineken lata 330ml", "Cervezas", "lata", 21, "prov2", 0.79, fechaHoy, "");
-    addProducto("Filetes pechuga de pollo", "Carnes", "560g", 10, "prov2", 4.09, fechaHoy, "");
-
-    // ==================== FIN DATOS ====================
-
-    // INDEXEDDB (mismo código que funciona)
+    // ==================== GESTIÓN DE INDEXEDDB ====================
     let db;
+    let proveedores = [];
+    let productos = [];
+    let precios = [];
     const DB_NAME = "BrunchClubDB";
-    const DB_VERSION = 2;
+    const DB_VERSION = 3;
 
     function openDB() {
         return new Promise((resolve, reject) => {
@@ -197,15 +202,33 @@
         return tx.done;
     }
 
+    async function resetToInitialData() {
+        if (!confirm("⚠️ ¿RESETEAR TODOS LOS DATOS? Se borrarán todos los productos, precios y proveedores actuales. No se puede deshacer.")) return;
+        const initial = getInitialData();
+        proveedores = initial.proveedores;
+        productos = initial.productos;
+        precios = initial.precios;
+        await saveAllData();
+        location.reload();
+    }
+
     async function loadAllData() {
         if (!db) await openDB();
         const storedProveedores = await getAllFromStore("proveedores");
         const storedProductos = await getAllFromStore("productos");
         const storedPrecios = await getAllFromStore("precios");
-        if (storedProveedores.length) proveedores = storedProveedores;
-        if (storedProductos.length) productos = storedProductos;
-        if (storedPrecios.length) precios = storedPrecios;
-        if (!storedProductos.length) await saveAllData();
+        
+        if (storedProveedores.length && storedProductos.length) {
+            proveedores = storedProveedores;
+            productos = storedProductos;
+            precios = storedPrecios;
+        } else {
+            const initial = getInitialData();
+            proveedores = initial.proveedores;
+            productos = initial.productos;
+            precios = initial.precios;
+            await saveAllData();
+        }
         renderDashboard();
         renderTabs();
     }
@@ -220,7 +243,7 @@
         });
     }
 
-    // EDITAR PROVEEDOR
+    // ==================== FUNCIONES DE EDICIÓN Y RENDERIZADO ====================
     function editarProveedor(provId) {
         const prov = proveedores.find(p => p.id === provId);
         if (!prov) return;
@@ -371,7 +394,9 @@
             if (!prov) { prov = { id: genId(), nombre: proveedorNombre, contacto: "" }; proveedores.push(prov); }
             const iva = parseInt(prompt("IVA %:", "21"));
             const precio = parseFloat(prompt("Precio sin IVA:"));
-            addProducto(nombre, categoria, "unidad", isNaN(iva)?21:iva, prov.id, isNaN(precio)?0:precio, new Date().toISOString().slice(0,10), "");
+            const id = genId();
+            productos.push({ id, nombre, categoria, unidad: "unidad", ivaPorcentaje: isNaN(iva)?21:iva, proveedorId: prov.id, notas: "" });
+            precios.push({ id: genId(), productoId: id, proveedorId: prov.id, precioSinIVA: isNaN(precio)?0:precio, fecha: new Date().toISOString().slice(0,10), notaEspecial: "" });
             await saveAllData();
             renderProductos();
             renderDashboard();
@@ -394,7 +419,9 @@
                     let prov = proveedores.find(p => p.nombre === (row.proveedor || "Mercadona"));
                     if (!prov) prov = { id: genId(), nombre: row.proveedor, contacto: "" };
                     let iva = row.iva_porcentaje ? parseInt(row.iva_porcentaje) : 21;
-                    addProducto(row.nombre, row.categoria || "General", row.unidad || "unidad", iva, prov.id, parseFloat(row.precio_sin_iva) || 0, row.fecha || new Date().toISOString().slice(0,10), row.notas || "");
+                    const id = genId();
+                    productos.push({ id, nombre: row.nombre, categoria: row.categoria || "General", unidad: row.unidad || "unidad", ivaPorcentaje: iva, proveedorId: prov.id, notas: row.notas || "" });
+                    precios.push({ id: genId(), productoId: id, proveedorId: prov.id, precioSinIVA: parseFloat(row.precio_sin_iva) || 0, fecha: row.fecha || new Date().toISOString().slice(0,10), notaEspecial: row.notas || "" });
                 }
                 await saveAllData();
                 alert("Importación completada");
@@ -496,11 +523,14 @@
         renderDashboard();
     }
 
+    // ==================== EVENTOS Y ARRANQUE ====================
     document.getElementById("themeToggle")?.addEventListener("click", () => {
         document.body.classList.toggle("dark");
         localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
     });
     if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
+
+    document.getElementById("resetBtn")?.addEventListener("click", resetToInitialData);
 
     document.getElementById("exportBtn")?.addEventListener("click", () => {
         const data = { proveedores, productos, precios };
